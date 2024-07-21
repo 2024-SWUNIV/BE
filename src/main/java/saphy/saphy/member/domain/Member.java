@@ -7,15 +7,17 @@ import saphy.saphy.bookmark.domain.Bookmark;
 import java.util.List;
 
 @Entity
+@Builder
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "members")
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String loginId;
 
     @Column(nullable = false)
@@ -28,18 +30,17 @@ public class Member {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String address;
 
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
+    @Column
     private String email;
 
     @Column(nullable = false)
     private Boolean isAdmin;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks;
 }

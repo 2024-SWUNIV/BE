@@ -73,11 +73,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        // 인증에 성공한 email 받아오기
-        String userEmail = authResult.getName();
+        // 인증에 성공한 loginId 받아오기
+        String loginId = authResult.getName();
 
         // 토큰 생성 - access 토큰 유효기간 30분
-        String accessToken = jwtUtil.createJwt("access", userEmail, 30 * 60 * 1000L);
+        String accessToken = jwtUtil.createJwt("access", loginId, 30 * 60 * 1000L);
 
         // 토큰 생성 - refresh 토큰 유효기간 1일 (refresh 토큰에는 사용자 정보 미포함)
         String refresh = jwtUtil.createJwt("refresh", "fakeEmail", 24 * 60 * 60 * 1000L);
@@ -85,7 +85,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addHeader("Set-Cookie", createCookie("refresh", refresh).toString()); // 쿠키 생성
 
         // refresh 토큰 객체 생성 및 Redis 저장
-        RefreshToken refreshToken = new RefreshToken(refresh,userEmail);
+        RefreshToken refreshToken = new RefreshToken(refresh,loginId);
         refreshTokenRepository.save(refreshToken);
 
         // API 응답 생성

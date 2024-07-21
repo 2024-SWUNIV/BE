@@ -31,6 +31,13 @@ public class ApiResponse<T> {
 		this.results = List.of(data);
 	}
 
+	// 단일 결과 + 에러 코드 반환
+	public ApiResponse(T data, ErrorCode errorCode) {
+		this.status = new Status(errorCode);
+		this.metadata = new Metadata(1);
+		this.results = List.of(data);
+	}
+
 	public ApiResponse(ErrorCode errorCode) {
 		this.status = new Status(errorCode);
 	}
